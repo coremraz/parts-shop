@@ -14,6 +14,6 @@ Route::get('/', function () {
     //Здесь берем свойства, в модели есть методы получения значений свойств
     $kind_props = \App\Models\Product_kind_prop::find(1)->get();
 
-
+    dd(\App\Models\Product::getRelations());
     return view('welcome', compact('products', 'kinds', 'kind_props', 'properties'));
 });
