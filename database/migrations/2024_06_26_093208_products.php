@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('value');
+            $table->foreignIdFor(Product_kind::class);
+            $table->string('title');
             $table->string('article');
             $table->string('short_description');
             $table->text('description');
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->float('weight');
             $table->float('width');
             $table->float('height');
+            $table->float('length');
             $table->float('package_weight');
             $table->float('package_width');
             $table->float('package_height');
@@ -38,7 +40,7 @@ return new class extends Migration
             $table->bigInteger('category_id');
             $table->bigInteger('vendor_id');
             $table->bigInteger('currency_id');
-            $table->foreignIdFor(Product_kind::class);
+            $table->timestamps();
         });
     }
 
