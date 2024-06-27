@@ -3,8 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Product;
-use App\Models\Product_kind_prop;
 
 return new class extends Migration
 {
@@ -13,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('properties', function (Blueprint $table) {
+        Schema::create('vendor', function (Blueprint $table) {
             $table->id();
-            $table->string('value');
-            $table->foreignIdFor(Product_kind_prop::class);
-            $table->foreignIdFor(Product::class);
+            $table->string('name');
+            $table->string('logo');
+            $table->string('description');
+            $table->string('country');
             $table->timestamps();
         });
     }

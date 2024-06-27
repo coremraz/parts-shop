@@ -14,9 +14,10 @@ return new class extends Migration
     {
         Schema::create('product_kinds_props', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
             $table->integer('sorting');
             $table->foreignIdFor(Product_kind::class);
+            $table->timestamps();
         });
     }
 
