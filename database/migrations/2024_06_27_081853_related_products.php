@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use App\Models\Related_product_type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->string('comment_2');
             $table->string('comment_3');
             $table->foreignIdFor(Product::class);
-            $table->foreignIdFor(Product::class); //related_product_type_id
+            $table->foreignIdFor(Related_product_type::class); //related_product_type_id
             $table->timestamps();
         });
     }

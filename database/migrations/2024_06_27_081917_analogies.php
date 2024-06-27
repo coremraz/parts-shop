@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Analog_vendor;
 use App\Models\Product;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('article');
             $table->foreignIdFor(Product::class);
-            $table->foreignIdFor(Product::class); //analog_vendor_id
+            $table->foreignIdFor(Analog_vendor::class); //analog_vendor_id
             $table->timestamps();
         });
     }
