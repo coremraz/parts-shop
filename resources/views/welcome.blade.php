@@ -868,6 +868,11 @@
     @foreach($related as $prop => $value)
         <span><b>{{ $prop }}:</b> {{ $value}}</span>
     @endforeach
+    <br>
+    <h1 style="color:blue;"><b>АНАЛОГИ</b></h1>
+    @foreach($analogies as $vendor => $analog)
+        <span><b>{{ $vendor }}:</b> {{ $analog}}</span>
+    @endforeach
 </div>
 </body>
 

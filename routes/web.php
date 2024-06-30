@@ -14,6 +14,24 @@ Route::get('/', function () {
     //Я так понимаю описание
     $kind = $products->kinds()->first();
 
+    //Аналоги товара
+    $rawAnalogies = $products->analogies()->get();
+    $analogies = [];
+
+    //Проверяем, есть ли вообще аналоги
+    if (!empty($rawAnalogies)) {
+        foreach ($rawAnalogies as $analog) {
+            if ($analog->name != null || $analog->article != null) {
+                //Проверка на публикацию
+                if ($analog->vendor()->first()->published != 0) {
+                    //Если артикул и имя есть отображаются оба, если чего-то не хватает - отображается что-то одно (тернарный оператор)
+                    $analogies[$analog->vendor()->first()->name] = $analog->name ? ($analog->article ? $analog->name . " ($analog->article)" : $analog->name) : $analog->article;
+                }
+            }
+        }
+    }
+
+
     //Здесь берем свойства, в модели есть методы получения значений свойств
     $kind_props = Product_kind::find($kind->id)->props()->get();
 
@@ -38,5 +56,5 @@ Route::get('/', function () {
         $characteristics[$kind_prop->name] = $kind_prop->values()->first()->value;
     }
 
-    return view('welcome', compact('products', 'kind', 'kind_props', 'characteristics', 'related'));
+    return view('welcome', compact('products', 'kind', 'kind_props', 'characteristics', 'related', 'analogies'));
 });

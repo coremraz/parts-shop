@@ -20,4 +20,9 @@ class Product extends Model
         return $this->hasMany(Property::class);
     }
 
+    public function analogies()
+    {
+        return $this->hasMany(Analog::class);
+    }
+
 }
