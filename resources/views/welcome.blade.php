@@ -863,6 +863,11 @@
     @foreach($characteristics as $prop => $value)
         <span><b>{{ $prop }}:</b> {{ $value}}</span>
     @endforeach
+    <br>
+    <h1 style="color:blue;"><b>ПОХОЖИЕ ТОВАРЫ</b></h1>
+    @foreach($related as $prop => $value)
+        <span><b>{{ $prop }}:</b> {{ $value}}</span>
+    @endforeach
 </div>
 </body>
 
