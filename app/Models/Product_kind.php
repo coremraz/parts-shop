@@ -9,8 +9,9 @@ class Product_kind extends Model
 {
     use HasFactory;
     protected $table = 'product_kinds';
+
     public function props()
     {
-        return $this->hasMany(Product_kind_prop::class);
+        return $this->hasMany(Product_kind_prop::class, 'product_kind_id');
     }
 }
