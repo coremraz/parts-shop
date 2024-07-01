@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
     //Здесь название продукта
-    $products = Product::find(1500);
+    $product = Product::find(1500);
 
     //Я так понимаю описание
-    $kind = $products->kinds()->first();
+    $kind = $product->kinds()->first();
 
     //Аналоги товара
-    $rawAnalogies = $products->analogies()->get();
+    $rawAnalogies = $product->analogies()->get();
     $analogies = [];
 
     //Проверяем, есть ли вообще аналоги
@@ -56,5 +56,14 @@ Route::get('/', function () {
         $characteristics[$kind_prop->name] = $kind_prop->values()->first()->value;
     }
 
-    return view('welcome', compact('products', 'kind', 'kind_props', 'characteristics', 'related', 'analogies'));
+    //Что выводить в цене
+    if ($product->special_price) {
+        $price = $product->special_price . " ₽";
+    } else if (!$product->special_price && !$product->price) {
+        $price = "По запросу";
+    } else {
+        $price = $product->price . " ₽";
+    }
+
+    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price'));
 });

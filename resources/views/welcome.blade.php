@@ -9,11 +9,13 @@
 
 <body>
 <div style="display: flex; flex-direction: column;">
+    <x-product-card-title :name="$kind->name . ' ' . $product->title"/>
 
-    <x-short-description :plural="$kind->name_plural" :name="$products->title" :article="$products->article"
-                         :shortDescription="$products->short_description"/>
+    <x-short-description :plural="$kind->name_plural" :name="$product->title" :article="$product->article"
+                         :shortDescription="$product->short_description"/>
+    <x-buy-block :price="$price"/>
 
-    <span><b>Name:</b> {{$products->title}}</span>
+    <span><b>Name:</b> {{$product->title}}</span>
 
 
     <span><b>Kind:</b> {{$kind->name}}</span>
