@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
     //Здесь название продукта
-    $products = Product::find(1433);
+    $products = Product::find(1500);
 
     //Я так понимаю описание
     $kind = $products->kinds()->first();
