@@ -4,12 +4,18 @@ use App\Models\Product;
 use App\Models\Product_kind_prop;
 use App\Models\Product_kind;
 use App\Models\Property;
+use App\Models\Delivery_method;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 Route::get('/', function () {
+    return redirect('/1433');
+});
+
+Route::get('/{id}', function (Request $request) {
 
     //Здесь название продукта
-    $product = Product::find(1500);
+    $product = Product::find($request->id);
 
     //Я так понимаю описание
     $kind = $product->kinds()->first();
@@ -65,5 +71,25 @@ Route::get('/', function () {
         $price = $product->price . " ₽";
     }
 
-    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price'));
-});
+    //Что выводить в стоке
+    if ($product->stock > 0) {
+        $stock = "В наличии: " . $product->stock . " шт.";
+    } else if ($product->stock == 0) {
+        $stock = "Срок поставки: " . $product->vendor()->first()->delivery_time;
+    } else {
+        $stock = "Ожидается";
+    }
+
+    //Что выводить в доставке
+    $delivery = Delivery_method::find(1);
+    $deliveryMethods = explode(",", $delivery->title);
+    $deliveryCost = explode(",", $delivery->comment);
+
+    $deliveryMethods = [
+        trim($deliveryMethods[0]) => trim($deliveryCost[0]),
+        trim($deliveryMethods[1]) => trim($deliveryCost[1]),
+    ];
+
+
+    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods'));
+})->name('product');

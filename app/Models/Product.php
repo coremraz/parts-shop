@@ -25,4 +25,9 @@ class Product extends Model
         return $this->hasMany(Analog::class);
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
 }

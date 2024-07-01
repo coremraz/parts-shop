@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vendors', function (Blueprint $table) {
+        Schema::create('delivery_methods', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('logo');
-            $table->string('description');
-            $table->string('country');
-            $table->string('delivery_time')->nullable();
+            $table->string('title');
+            $table->string('comment');
+            $table->string('picture');
             $table->timestamps();
         });
     }
