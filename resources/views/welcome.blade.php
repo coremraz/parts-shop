@@ -10,6 +10,7 @@
 <body>
 <div style="display: flex; flex-direction: column;">
 
+    <x-category-tree :catalogTree="$catalogTree"/>
     <x-product-card.product-card :kind="$kind" :product="$product" :price="$price" :stock="$stock" :deliveryMethods="$deliveryMethods"/>
 
     <span><b>Name:</b> {{$product->title}}</span>

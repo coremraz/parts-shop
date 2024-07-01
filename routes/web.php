@@ -90,6 +90,15 @@ Route::get('/{id}', function (Request $request) {
         trim($deliveryMethods[1]) => trim($deliveryCost[1]),
     ];
 
+    //Дерево каталога
+    $catalogTree = [
+      'url1' => 'Главная',
+      'url2' => 'Каталог товаров',
+      'url3' => $product->category()->first() ? $product->category()->first()->name : "default", //наверняка заглушка, пока категории не заполнены
+      'url4' => $kind->name,
+      'url5' => $product->title,
+    ];
 
-    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods'));
+
+    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree'));
 })->name('product');
