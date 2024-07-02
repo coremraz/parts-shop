@@ -103,11 +103,11 @@ Route::get('/{id}', function (Request $request) {
 
     //Дерево каталога
     $catalogTree = [
-      'url1' => 'Главная',
-      'url2' => 'Каталог товаров',
-      'url3' => $product->category()->first() ? $product->category()->first()->name : "default", //наверняка заглушка, пока категории не заполнены
-      'url4' => $kind->name,
-      'url5' => $product->title,
+        'url1' => 'Главная',
+        'url2' => 'Каталог товаров',
+        'url3' => $product->category()->first() ? $product->category()->first()->name : "default", //наверняка заглушка, пока категории не заполнены
+        'url4' => $kind->name,
+        'url5' => $product->title,
     ];
 
     //информация об упаковке
@@ -117,7 +117,6 @@ Route::get('/{id}', function (Request $request) {
         'height' => $product->package_height,
         'weight' => $product->package_weight,
     ];
-
 
 
     return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo'));
@@ -131,3 +130,8 @@ Route::get('/admin/products', function () {
 Route::get('/admin/products/{product}/edit', function (Product $product) {
     return view('admin.edit', compact('product'));
 })->name('product.edit');
+
+Route::get('/admin/products/{product}/store', function (Product $product) {
+    return view('admin.edit', compact('product'));
+})->name('product.edit');
+
