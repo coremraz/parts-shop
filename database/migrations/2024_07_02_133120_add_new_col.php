@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->string('warranty')->nullable();
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Exchange_rate::class);
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->string('warranty')->nullable();
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Exchange_rate::class);
         });
     }
 };
