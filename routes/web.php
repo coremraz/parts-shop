@@ -122,3 +122,12 @@ Route::get('/{id}', function (Request $request) {
 
     return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo'));
 })->name('product');
+
+Route::get('/admin/products', function () {
+    $products = Product::paginate(100);
+    return view('admin.index', compact('products'));
+});
+
+Route::get('/admin/products/{product}/edit', function (Product $product) {
+    return view('admin.edit', compact('product'));
+})->name('product.edit');
