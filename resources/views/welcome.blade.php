@@ -10,8 +10,8 @@
 <body>
 <div style="display: flex; flex-direction: column;">
 
-    <x-category-tree :catalogTree="$catalogTree"/>
-    <x-product-card.product-card :kind="$kind" :product="$product" :price="$price" :stock="$stock" :deliveryMethods="$deliveryMethods"/>
+    <x-product-card.category-tree :catalogTree="$catalogTree"/>
+    <x-product-card.product-card :kind="$kind" :product="$product" :price="$price" :stock="$stock" :deliveryMethods="$deliveryMethods" :logo="$logo" />
 
     <span><b>Name:</b> {{$product->title}}</span>
 
@@ -21,6 +21,8 @@
     @foreach($characteristics as $prop => $value)
         <span><b>{{ $prop }}:</b> {{ $value}}</span>
     @endforeach
+
+    <x-product-card.brand-info :brandInfo="$brandInfo"/>
     <br>
     <h1 style="color:blue;"><b>ПОХОЖИЕ ТОВАРЫ</b></h1>
     @foreach($related as $prop => $value)

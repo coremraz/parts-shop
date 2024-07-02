@@ -80,6 +80,24 @@ Route::get('/{id}', function (Request $request) {
         $stock = "Ожидается";
     }
 
+    //logo
+
+    if ($product->vendor()->first()->logo) {
+        $logo = "<img href='$product->vendor()->first()->logo' alt='brand logo'/>";
+    } else {
+        $logo = $product->vendor()->first()->name;
+    }
+
+    //brand info
+    $brandInfo = [
+        "name" => $product->vendor()->first()->name,
+        "logo" => $product->vendor()->first()->logo,
+        "country" => $product->vendor()->first()->country,
+        "warranty" => $product->vendor()->first()->warranty,
+    ];
+
+    $vendorName = $product->vendor()->first()->name;
+
     //Что выводить в доставке
     $delivery = Delivery_method::find(1);
     $deliveryMethods = explode(",", $delivery->title);
@@ -100,5 +118,5 @@ Route::get('/{id}', function (Request $request) {
     ];
 
 
-    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree'));
+    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'delivery'));
 })->name('product');

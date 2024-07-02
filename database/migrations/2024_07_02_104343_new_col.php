@@ -7,26 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Выполнить миграции.
-     *
-     * @return void
+     * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('vendors', function (Blueprint $table) {
-            $table->string('delivery_time')->nullable();
+            $table->string('warranty')->nullable();
         });
     }
 
     /**
-     * Отменить миграции.
-     *
-     * @return void
+     * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('vendors', function (Blueprint $table) {
-            $table->dropColumn('delivery_time');
+            $table->string('warranty')->nullable();
         });
     }
 };
