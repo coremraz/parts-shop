@@ -9,30 +9,10 @@
 
 <body>
 <div style="display: flex; flex-direction: column;">
-
-    <x-product-card.category-tree :catalogTree="$catalogTree"/>
-    <x-product-card.product-card :kind="$kind" :product="$product" :price="$price" :stock="$stock" :deliveryMethods="$deliveryMethods" :logo="$logo" />
-
-    <span><b>Name:</b> {{$product->title}}</span>
-
-
-    <span><b>Kind:</b> {{$kind->name}}</span>
-
-    @foreach($characteristics as $prop => $value)
-        <span><b>{{ $prop }}:</b> {{ $value}}</span>
-    @endforeach
-
-    <x-product-card.brand-info :brandInfo="$brandInfo"/>
-    <br>
-    <h1 style="color:blue;"><b>ПОХОЖИЕ ТОВАРЫ</b></h1>
-    @foreach($related as $prop => $value)
-        <span><b>{{ $prop }}:</b> {{ $value}}</span>
-    @endforeach
-    <br>
-    <h1 style="color:blue;"><b>АНАЛОГИ</b></h1>
-    @foreach($analogies as $vendor => $analog)
-        <span><b>{{ $vendor }}:</b> {{ $analog}}</span>
-    @endforeach
+    <x-product-card.product-card :kind="$kind" :product="$product" :price="$price" :stock="$stock"
+                                 :deliveryMethods="$deliveryMethods" :logo="$logo" :brandInfo="$brandInfo"
+                                 :characteristics="$characteristics" :catalogTree="$catalogTree" :related="$related"
+                                 :analogies="$analogies" :packageInfo="$packageInfo"/>
 </div>
 </body>
 

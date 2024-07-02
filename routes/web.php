@@ -83,7 +83,7 @@ Route::get('/{id}', function (Request $request) {
     //logo
 
     if ($product->vendor()->first()->logo) {
-        $logo = "<img href='$product->vendor()->first()->logo' alt='brand logo'/>";
+        $logo = "<img src='$product->vendor()->first()->logo' alt='brand logo'/>";
     } else {
         $logo = $product->vendor()->first()->name;
     }
@@ -99,14 +99,7 @@ Route::get('/{id}', function (Request $request) {
     $vendorName = $product->vendor()->first()->name;
 
     //Что выводить в доставке
-    $delivery = Delivery_method::find(1);
-    $deliveryMethods = explode(",", $delivery->title);
-    $deliveryCost = explode(",", $delivery->comment);
-
-    $deliveryMethods = [
-        trim($deliveryMethods[0]) => trim($deliveryCost[0]),
-        trim($deliveryMethods[1]) => trim($deliveryCost[1]),
-    ];
+    $deliveryMethods = Delivery_method::all();
 
     //Дерево каталога
     $catalogTree = [
@@ -117,6 +110,15 @@ Route::get('/{id}', function (Request $request) {
       'url5' => $product->title,
     ];
 
+    //информация об упаковке
+    $packageInfo = [
+        'length' => $product->package_length,
+        'width' => $product->package_width,
+        'height' => $product->package_height,
+        'weight' => $product->package_weight,
+    ];
 
-    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'delivery'));
+
+
+    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo'));
 })->name('product');
