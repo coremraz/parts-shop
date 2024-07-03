@@ -122,16 +122,70 @@ Route::get('/{id}', function (Request $request) {
     return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo'));
 })->name('product');
 
+//админка
+
+//Products
+
 Route::get('/admin/products', function () {
     $products = Product::paginate(100);
-    return view('admin.index', compact('products'));
-});
+    return view('admin.products.index', compact('products'));
+})->name('admin');
 
 Route::get('/admin/products/{product}/edit', function (Product $product) {
-    return view('admin.edit', compact('product'));
+    return view('admin.products.edit', compact('product'));
 })->name('product.edit');
 
-Route::get('/admin/products/{product}/store', function (Product $product) {
-    return view('admin.edit', compact('product'));
-})->name('product.edit');
+Route::patch('/admin/products/{product}/store', function (Request $request, Product $product) {
+    $product->fill($request->all());
+    $product->save();
+    return redirect()->back();
+})->name('product.store');
 
+Route::delete('/admin/products/{product}', function (Request $request, Product $product) {
+    $product->delete();
+    return redirect()->route('admin');
+})->name('product.destroy');
+
+//Product kinds
+
+Route::get('/admin/product-kinds', function () {
+    $productKinds = Product_kind::paginate(100);
+    return view('admin.product-kinds.index', compact('productKinds'));
+})->name('product-kinds.index');
+
+Route::get('/admin/product-kinds/{productKind}/edit', function (Product_kind $productKind) {
+    return view('admin.product-kinds.edit', compact('productKind'));
+})->name('product-kinds.edit');
+
+Route::patch('/admin/product-kinds/{productKind}/store', function (Request $request, Product_kind $productKind) {
+    $productKind->fill($request->all());
+    $productKind->save();
+    return redirect()->back();
+})->name('product-kinds.store');
+
+Route::delete('/admin/product-kinds/{productKind}', function (Request $request, Product_kind $productKind) {
+    $productKind->delete();
+    return redirect()->route('product-kinds.index');
+})->name('product-kinds.destroy');
+
+//product kind props
+
+Route::get('/admin/product-kinds-props', function () {
+    $productKindProps = Product_kind_prop::paginate(100);
+    return view('admin.product-kind-props.index', compact('productKindProps'));
+})->name('product-kind-props.index');
+
+Route::get('/admin/product-kinds-props/{productKindProp}/edit', function (Product_kind_prop $productKindProp) {
+    return view('admin.product-kind-props.edit', compact('productKindProp'));
+})->name('product-kind-props.edit');
+
+Route::patch('/admin/product-kinds-props/{productKindProp}/store', function (Request $request, Product_kind_prop $productKindProp) {
+    $productKindProp->fill($request->all());
+    $productKindProp->save();
+    return redirect()->back();
+})->name('product-kind-props.store');
+
+Route::delete('/admin/product-kinds-props/{productKindProp}', function (Request $request, Product_kind_prop $productKindProp) {
+    $productKindProp->delete();
+    return redirect()->route('product-kind-props.index');
+})->name('product-kind-props.destroy');
