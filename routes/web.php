@@ -12,6 +12,12 @@ Route::get('/', function () {
     return redirect('/1433');
 });
 
+//админка
+Route::get('/admin', function () {
+    return view('admin.index');
+})->name('admin');
+
+
 Route::get('/{id}', function (Request $request) {
 
     //Здесь название продукта
@@ -122,14 +128,13 @@ Route::get('/{id}', function (Request $request) {
     return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo'));
 })->name('product');
 
-//админка
 
 //Products
 
 Route::get('/admin/products', function () {
     $products = Product::paginate(100);
     return view('admin.products.index', compact('products'));
-})->name('admin');
+})->name('product.index');
 
 Route::get('/admin/products/{product}/edit', function (Product $product) {
     return view('admin.products.edit', compact('product'));
@@ -143,7 +148,7 @@ Route::patch('/admin/products/{product}/store', function (Request $request, Prod
 
 Route::delete('/admin/products/{product}', function (Request $request, Product $product) {
     $product->delete();
-    return redirect()->route('admin');
+    return redirect()->route('product.index');
 })->name('product.destroy');
 
 //Product kinds
