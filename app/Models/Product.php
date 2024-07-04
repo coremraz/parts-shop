@@ -36,4 +36,9 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
+
 }
