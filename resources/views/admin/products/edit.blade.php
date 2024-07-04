@@ -7,12 +7,12 @@
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-100 font-sans">
-<x-ui.admin.form method="POST" action="{{route('product.store', $product)}}">
+<x-ui.admin.form method="POST" action="{{route('admin.product.store', $product)}}">
     @csrf
-    @method('PATCH')
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
         @foreach($product->getAttributes() as $key => $value)
-            @if($key != 'description' && $key != 'short_description')
+            @if($key != 'description' && $key != 'short_description' && $key != 'created_at' && $key != 'updated_at' && $key != 'id')
                 <x-ui.admin.input name="{{ $key }}" value="{{ $value }}" />
             @endif
         @endforeach

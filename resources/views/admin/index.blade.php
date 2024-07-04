@@ -12,7 +12,7 @@
 
     <div class="flex">
         <x-ui.admin.card title="Товары [Products]" >
-            <x-ui.admin.button href="{{ route('product.index') }}">Manage Products</x-ui.admin.button>
+            <x-ui.admin.button href="{{ route('admin.product.index') }}">Manage Products</x-ui.admin.button>
         </x-ui.admin.card>
 
         <x-ui.admin.card title="Описание [Product Kinds]" >

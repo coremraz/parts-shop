@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Models\Product;
 use App\Models\Product_kind_prop;
 use App\Models\Product_kind;
@@ -131,25 +132,17 @@ Route::get('/{id}', function (Request $request) {
 
 //Products
 
-Route::get('/admin/products', function () {
-    $products = Product::paginate(100);
-    return view('admin.products.index', compact('products'));
-})->name('product.index');
+Route::prefix('admin')->name('admin.')->group(function () {
+    //Products
+    Route::get('/products', [ProductController::class, 'index'])->name('product.index');
 
-Route::get('/admin/products/{product}/edit', function (Product $product) {
-    return view('admin.products.edit', compact('product'));
-})->name('product.edit');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('product.store');
 
-Route::patch('/admin/products/{product}/store', function (Request $request, Product $product) {
-    $product->fill($request->all());
-    $product->save();
-    return redirect()->back();
-})->name('product.store');
-
-Route::delete('/admin/products/{product}', function (Request $request, Product $product) {
-    $product->delete();
-    return redirect()->route('product.index');
-})->name('product.destroy');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::patch('/products/{product}/update', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
+});
 
 //Product kinds
 
