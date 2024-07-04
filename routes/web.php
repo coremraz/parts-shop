@@ -154,7 +154,7 @@ Route::delete('/admin/products/{product}', function (Request $request, Product $
 //Product kinds
 
 Route::get('/admin/product-kinds', function () {
-    $productKinds = Product_kind::paginate(100);
+    $productKinds = Product_kind::orderBy('name', 'asc')->paginate(100);
     return view('admin.product-kinds.index', compact('productKinds'));
 })->name('product-kinds.index');
 
