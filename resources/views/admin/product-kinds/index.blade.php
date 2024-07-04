@@ -9,7 +9,7 @@
 <body class="bg-gray-100 font-sans">
 <div class="container mx-auto p-8">
     <h1 class="text-3xl font-bold mb-6">Product kind</h1>
-
+    <x-ui.admin.button href="{{ route('admin.product-kinds.create') }}">Add new product kind</x-ui.admin.button>
     <div class="bg-white shadow-md rounded my-6">
         <table class="w-full table-auto">
             <thead>
@@ -26,7 +26,7 @@
                     <td class="py-3 px-6 text-left">{{ $productKind->id }}</td>
                     <td class="py-3 px-6 text-left">{{ $productKind->name }}</td>
                     <td class="py-3 px-6 text-center">
-                        <a href="{{ route('product-kinds.edit', $productKind) }}" title="Редактировать" class="text-blue-400 hover:text-blue-600">
+                        <a href="{{ route('admin.product-kinds.edit', $productKind) }}" title="Редактировать" class="text-blue-400 hover:text-blue-600">
                             ✎
                         </a>
                     </td>

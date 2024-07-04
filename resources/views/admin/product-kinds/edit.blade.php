@@ -7,7 +7,7 @@
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-100 font-sans">
-<x-ui.admin.form method="POST" action="{{route('product-kinds.store', $productKind)}}">
+<x-ui.admin.form method="POST" action="{{route('admin.product-kinds.update', $productKind)}}">
     @csrf
     @method('PATCH')
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

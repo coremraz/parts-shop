@@ -16,7 +16,7 @@
         </x-ui.admin.card>
 
         <x-ui.admin.card title="Описание [Product Kinds]" >
-            <x-ui.admin.button href="{{ route('product-kinds.index') }}">Manage Product Kinds</x-ui.admin.button>
+            <x-ui.admin.button href="{{ route('admin.product-kinds.index') }}">Manage Product Kinds</x-ui.admin.button>
         </x-ui.admin.card>
         <x-ui.admin.card title="Характеристики [Product kind props]" >
             <x-ui.admin.button href="{{ route('product-kind-props.index') }}">Manage Props</x-ui.admin.button>

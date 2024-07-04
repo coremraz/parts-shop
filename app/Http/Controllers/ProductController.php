@@ -20,7 +20,7 @@ class ProductController extends Controller
         $tableName = $product->getTable();
         $columns = Schema::getColumnListing($tableName);
 
-        return view('admin.products.create', compact('columns', 'product'));
+        return view('admin.products.create', compact('columns'));
     }
 
     public function store(Request $request)
@@ -53,7 +53,7 @@ class ProductController extends Controller
             'vendor_id' => 'required',
             'currency_id' => 'required',
         ]);
-        $product = new Product($request->all());
+        $product = new Product($validatedData);
         $product->save();
         return redirect()->back()->with('success', 'Product created successfully!');
     }

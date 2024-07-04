@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductKindController;
 use App\Models\Product;
 use App\Models\Product_kind_prop;
 use App\Models\Product_kind;
@@ -142,29 +143,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
     Route::patch('/products/{product}/update', [ProductController::class, 'update'])->name('product.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
+
+    // Product Kinds
+    Route::get('/product-kinds', [ProductKindController::class, 'index'])->name('product-kinds.index');
+    Route::get('/product-kinds/create', [ProductKindController::class, 'create'])->name('product-kinds.create');
+    Route::post('/product-kinds', [ProductKindController::class, 'store'])->name('product-kinds.store');
+    Route::get('/product-kinds/{productKind}/edit', [ProductKindController::class, 'edit'])->name('product-kinds.edit');
+    Route::patch('/product-kinds/{productKind}/update', [ProductKindController::class, 'update'])->name('product-kinds.update');
 });
-
-//Product kinds
-
-Route::get('/admin/product-kinds', function () {
-    $productKinds = Product_kind::orderBy('name', 'asc')->paginate(100);
-    return view('admin.product-kinds.index', compact('productKinds'));
-})->name('product-kinds.index');
-
-Route::get('/admin/product-kinds/{productKind}/edit', function (Product_kind $productKind) {
-    return view('admin.product-kinds.edit', compact('productKind'));
-})->name('product-kinds.edit');
-
-Route::patch('/admin/product-kinds/{productKind}/store', function (Request $request, Product_kind $productKind) {
-    $productKind->fill($request->all());
-    $productKind->save();
-    return redirect()->back();
-})->name('product-kinds.store');
-
-Route::delete('/admin/product-kinds/{productKind}', function (Request $request, Product_kind $productKind) {
-    $productKind->delete();
-    return redirect()->route('product-kinds.index');
-})->name('product-kinds.destroy');
 
 //product kind props
 
