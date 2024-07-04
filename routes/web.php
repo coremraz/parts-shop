@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductKindController;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Product_kind_prop;
 use App\Models\Product_kind;
@@ -110,13 +111,28 @@ Route::get('/{id}', function (Request $request) {
     $deliveryMethods = Delivery_method::all();
 
     //Дерево каталога
-    $catalogTree = [
-        'url1' => 'Главная',
-        'url2' => 'Каталог товаров',
-        'url3' => $product->category()->first() ? $product->category()->first()->name : "default", //наверняка заглушка, пока категории не заполнены
-        'url4' => $kind->name,
-        'url5' => $product->title,
-    ];
+    function parentCategories($category)
+    {
+        $categoryIds = [];
+
+        // Добавляем исходную категорию
+        $categoryIds[$category->name] = $category->name;
+
+        if ($category->parentCategory()->first() != null) {
+            $tempCategory = $category->parentCategory()->first();
+            $categoryIds = array_merge(parentCategories($tempCategory), $categoryIds);
+        } else {
+            // Добавляем корневые элементы
+            $categoryIds = array_merge(['Главная' => 'Главная', 'Каталог товаров' => 'Каталог товаров'], $categoryIds);
+        }
+
+        return $categoryIds;
+    }
+
+    $catalogTree = parentCategories($product->category()->first());
+    $catalogTree[] = $product->title; // Добавляем в конец дерева имя товара
+
+
 
     //информация об упаковке
     $packageInfo = [

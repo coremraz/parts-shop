@@ -9,4 +9,10 @@ class Category extends Model
 {
     use HasFactory;
     protected $table = "categories";
+
+
+    public function parentCategory()
+    {
+        return $this->belongsTo(Category::class, 'category_Id');
+    }
 }
