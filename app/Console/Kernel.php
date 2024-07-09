@@ -24,6 +24,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command(FetchExchangeRates::class)->everyMinute();
+        $schedule->command(FetchExchangeRates::class)->everyFiveSeconds();
     }
 }
