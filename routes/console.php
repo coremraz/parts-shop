@@ -8,4 +8,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('fetch:exchange-rates')->everyMinute();
+Schedule::command('fetch:exchange-rates')->dailyAt('05:00')->timezone('Europe/Moscow');
