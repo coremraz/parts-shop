@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('product_composite_elements', function (Blueprint $table) {
-            $table->foreignId('product_element_id'); //скорее всего, в будущем, нужно будет заменить на модель
+        Schema::table('product_kinds_props', function (Blueprint $table) {
+            $table->boolean('section')->default(0);
         });
     }
 

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('sorting');
+            $table->boolean('section')->default(0);
             $table->foreignIdFor(Product_kind::class);
             $table->timestamps();
         });
