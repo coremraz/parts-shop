@@ -17,7 +17,7 @@
         <div class="flex flex-col space-y-1">
             <span class="font-bold text-2xl mb-2">Технические характеристики</span>
             @foreach($characteristics as $prop => $value)
-                <span><b>{{ $prop }}:</b> {{ $value}}</span>
+                <span>{!! $prop  !!}{{ $value}}</span>
             @endforeach
         </div>
         <div>

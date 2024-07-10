@@ -68,7 +68,18 @@ Route::get('/{id}', function (Request $request) {
 
     //Проходимся по характеристикам и ищем их значения через модель
     foreach ($kind_props as $kind_prop) {
-        $characteristics[$kind_prop->name] = $kind_prop->values()->first()->value;
+        if($kind_prop->section != 0) {
+            $characteristics["<b>" .$kind_prop->name . "</b>"]  = "";
+        } else {
+            //проверка, есть ли характеристика, если нет - не выводим
+            if (!$kind_prop->values()->first()->value) {
+                continue;
+            } else {
+                $characteristics[$kind_prop->name] = ": " . $kind_prop->values()->first()->value;
+            }
+
+        }
+
     }
 
     //Что выводить в цене
