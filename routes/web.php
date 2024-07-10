@@ -147,10 +147,10 @@ Route::get('/{id}', function (Request $request) {
 
     //информация об упаковке
     $packageInfo = [
-        'length' => $product->package_length,
-        'width' => $product->package_width,
-        'height' => $product->package_height,
-        'weight' => $product->package_weight,
+        'length' => $product->length,
+        'width' => $product->width,
+        'height' => $product->height,
+        'weight' => $product->weight,
     ];
 
 
