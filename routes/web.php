@@ -48,7 +48,7 @@ Route::get('/{id}', function (Request $request) {
 
 
     //Здесь берем свойства, в модели есть методы получения значений свойств
-    $kind_props = Product_kind::find($kind->id)->props()->get();
+    $kind_props = Product_kind::find($kind->id)->props()->get()->sortBy('sorting');
 
     //Определяем набор типов «сопутствующих товаров», которым обладает данный вид товара
     $kind_related_types = Product_kind::find($kind->id)->related_types()->get();
