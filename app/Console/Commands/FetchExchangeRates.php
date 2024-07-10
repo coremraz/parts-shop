@@ -36,7 +36,7 @@ class FetchExchangeRates extends Command
         foreach ($xml->Valute as $valute) {
             $charCode = (string) $valute->CharCode;
             $nominal = (int) $valute->Nominal;
-            $value = (float) $valute->Value;
+            $value = (float)str_replace(',', '.', substr($valute->Value, 0, strpos($valute->Value, '.') + 5)); // Округляем до сотых
 
             switch ($charCode) {
                 case 'EUR':
@@ -52,12 +52,15 @@ class FetchExchangeRates extends Command
                     $exchangeRates['cny_rate'] = $value / $nominal;
                     break;
                 case 'TRY':
-                    $exchangeRates['try_rate'] = $value / 10; // Adjust for 10 units
+                    $exchangeRates['try_rate'] = round($value / 10, 2); // Округляем до сотых и делим на 10
                     break;
             }
         }
 
-        $exchangeRateSDB = Exchange_rate::firstOrCreate($exchangeRates);
-        $exchangeRateSDB->save();
+// Очищаем таблицу перед записью
+        Exchange_rate::truncate();
+
+// Создаем новую запись
+        $exchangeRateSDB = Exchange_rate::create($exchangeRates);
     }
 }
