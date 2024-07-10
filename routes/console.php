@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('fetch:exchange-rates')->dailyAt('05:00')->timezone('Europe/Moscow');
+Schedule::command('products:update-stock')->everyMinute();
