@@ -66,9 +66,9 @@ Route::get('/{id}', function (Request $request) {
             //Проходимся по связанным товарам и записываем в каждую категорию
             foreach ($typeProducts as $typeProduct) {
                 if (isset($related[$type->name])) {
-                    $related[$type->name] .= " " . $typeProduct->product()->first()->title . ",";
+                    $related[$type->name][] = ["name" => $typeProduct->product()->first()->title, "id" => $typeProduct->product()->first()->id];
                 } else {
-                    $related[$type->name] = $typeProduct->product()->first()->title . ",";
+                    $related[$type->name][] = ["name" => $typeProduct->product()->first()->title, "id" => $typeProduct->product()->first()->id];
                 }
             }
         }
