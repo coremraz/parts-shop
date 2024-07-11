@@ -51,15 +51,26 @@ Route::get('/{id}', function (Request $request) {
     $kind_props = Product_kind::find($kind->id)->props()->get()->sortBy('sorting');
 
     //Определяем набор типов «сопутствующих товаров», которым обладает данный вид товара
-    $kind_related_types = Product_kind::find($kind->id)->related_types()->get();
+    $kind_related_types = Product_kind::find($kind->id)->relatedTypes()->get();
 
     //Массив похожих товаров
     $related = [];
 
+
+
     //Проходимся по типам и ищем их значения через модель
     foreach ($kind_related_types as $type) {
-        if ($type->related_products()->first() != null) {
-            $related[$type->name] = $type->related_products()->first()->comment_1;
+        if ($type->relatedProducts()->get() != null) {
+            //Получаем все связанные товары
+            $typeProducts = $type->relatedProducts()->get()->sortBy('sorting');
+            //Проходимся по связанным товарам и записываем в каждую категорию
+            foreach ($typeProducts as $typeProduct) {
+                if (isset($related[$type->name])) {
+                    $related[$type->name] .= " " . $typeProduct->product()->first()->title . ",";
+                } else {
+                    $related[$type->name] = $typeProduct->product()->first()->title . ",";
+                }
+            }
         }
     }
 
@@ -115,8 +126,6 @@ Route::get('/{id}', function (Request $request) {
         "country" => $product->vendor()->first()->country,
         "warranty" => $product->vendor()->first()->warranty,
     ];
-
-    $vendorName = $product->vendor()->first()->name;
 
     //Что выводить в доставке
     $deliveryMethods = Delivery_method::all();

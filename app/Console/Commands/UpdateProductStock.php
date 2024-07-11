@@ -83,7 +83,6 @@ class UpdateProductStock extends Command
 
                         // Получаем ячейку по адресу
                         $cell = $worksheet->getCell($cellAddress);
-
                         $cellValues[] = $cell->getValue();
                         $columnIndex++;
                     }
@@ -93,7 +92,7 @@ class UpdateProductStock extends Command
                         break;
                     }
 
-                    [$title, , $article, , $stock] = $cellValues;
+                    [$title, , $article, $stock] = $cellValues;
 
                     // Ищем товар по артикулу, если он есть
                     $product = Product::where('article', $article)

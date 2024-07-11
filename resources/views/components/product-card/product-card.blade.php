@@ -25,11 +25,7 @@
             <x-product-card.package-info :packageInfo="$packageInfo"/>
         </div>
     </div>
-    <h1 id="similar" style="color:blue;"><b>ПОХОЖИЕ ТОВАРЫ</b></h1>
-    @foreach($related as $prop => $value)
-        <span><b>{{ $prop }}:</b> {{ $value}}</span>
-    @endforeach
-    <br>
+    <x-product-card.related-products :related="$related"/>
     <h1 id="analogs" style="color:blue;"><b>АНАЛОГИ</b></h1>
     @foreach($analogies as $vendor => $analog)
         <span><b>{{ $vendor }}:</b> {{ $analog}}</span>
