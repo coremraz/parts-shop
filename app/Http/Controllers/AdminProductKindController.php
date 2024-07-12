@@ -6,7 +6,7 @@ use App\Models\Product_kind;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
-class ProductKindController extends Controller
+class AdminProductKindController extends Controller
 {
     public function index()
     {
