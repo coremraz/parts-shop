@@ -41,4 +41,9 @@ class Product extends Model
         return $this->belongsTo(Currency::class);
     }
 
+    public function composite()
+    {
+        return $this->hasMany(Product_composite_element::class);
+    }
+
 }

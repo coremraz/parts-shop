@@ -162,8 +162,28 @@ Route::get('/{id}', function (Request $request) {
         'weight' => $product->weight,
     ];
 
+    //Комплектация
+    $complectation = [];
 
-    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo'));
+
+//    Если у товара products.composite_product =0
+//    или не заполнена комплектация, то данный блок не отображается на сайте полностью
+    if(!$product->composite_product == 0 && $kind->compositeElements()->get()) {
+        //тип товара
+        $compositeKindElements = $kind->compositeElements()->get()->sortBy('sorting');
+        //присваиваем типу имя и артикул
+        foreach ($compositeKindElements as $element) {
+            if ($element->elements()->first()) {
+                $complectation[$element->element] = $element->elements()->first()->product()->first()->title . "(" . $element->elements()->first()->product()->first()->article. ")";
+            }
+        }
+    } else {
+        $complectation = null;
+    }
+
+
+
+    return view('welcome', compact('product', 'kind', 'kind_props', 'characteristics', 'related', 'analogies', 'price', 'stock', 'deliveryMethods', 'catalogTree', 'logo', 'brandInfo', 'packageInfo', 'complectation'));
 })->name('product');
 
 

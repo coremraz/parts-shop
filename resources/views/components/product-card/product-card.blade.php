@@ -1,4 +1,4 @@
-@props(['kind','product', 'price', 'stock', 'deliveryMethods', 'logo', 'vendorName', 'brandInfo', 'characteristics', 'catalogTree', 'related', 'analogies', 'packageInfo'])
+@props(['kind','product', 'price', 'stock', 'deliveryMethods', 'logo', 'vendorName', 'brandInfo', 'characteristics', 'catalogTree', 'related', 'analogies', 'packageInfo', 'complectation'])
 
 <div class="flex flex-col items-center w-screen">
     <x-product-card.category-tree :catalogTree="$catalogTree"/>
@@ -22,6 +22,9 @@
         </div>
         <div>
             <x-product-card.brand-info :brandInfo="$brandInfo" />
+            @if($complectation != null)
+                <x-product-card.complectation :complectation="$complectation"/>
+            @endif
             <x-product-card.package-info :packageInfo="$packageInfo"/>
         </div>
     </div>
