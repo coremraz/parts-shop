@@ -9,11 +9,12 @@ use App\Models\Product_kind_prop;
 use App\Models\Product_kind;
 use App\Models\Property;
 use App\Models\Delivery_method;
+use App\ViewModels\ProductViewModel;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 Route::get('/', function () {
-    return redirect('/1433');
+    return view('welcome');
 });
 
 //админка
