@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminProductKindController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\SessionController;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Product_kind_prop;
@@ -16,6 +18,13 @@ use Symfony\Component\HttpFoundation\Request;
 Route::get('/', function () {
     return view('welcome');
 });
+
+//регистрация
+
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
+Route::get('/login', [SessionController::class, 'create'])->name('login');
+Route::post('/login', [SessionController::class, 'store'])->name('login');
 
 //админка
 Route::get('/admin', function () {
