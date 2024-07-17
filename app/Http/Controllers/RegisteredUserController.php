@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
@@ -11,7 +12,7 @@ class RegisteredUserController extends Controller
 {
     public function create()
     {
-        return view('register');
+        return view('auth.register');
     }
 
     public function store()
@@ -23,12 +24,18 @@ class RegisteredUserController extends Controller
             'password' => ['required', Password::min(6), 'confirmed']
         ]);
 
-
-
         $user = User::create($attributes);
+
+        // Отправка события Registered
+        event(new Registered($user));
 
         Auth::login($user);
 
         return redirect('/');
+    }
+
+    public function firstLogin()
+    {
+        return view('auth.first-login-info');
     }
 }
