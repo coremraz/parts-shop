@@ -21,6 +21,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'fio',
         'number',
         'password',
+        'delegate',
+        'birth_date',
+        'sex',
     ];
 
     /**
@@ -44,5 +47,11 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    //проверка, что профиль заполнен
+    public function hasCompletedProfile()
+    {
+        return !empty($this->sex) && !empty($this->birth_date);
     }
 }

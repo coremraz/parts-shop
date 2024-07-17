@@ -3,33 +3,31 @@
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminProductKindController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
-use App\Mail\MyMailMessage;
-use App\Models\Category;
-use App\Models\Product;
 use App\Models\Product_kind_prop;
-use App\Models\Product_kind;
-use App\Models\Property;
-use App\Models\Delivery_method;
-use App\ViewModels\ProductViewModel;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Http\Middleware\CompleteProfile;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 //регистрация
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
+    Route::get('/login', [SessionController::class, 'create'])->name('login');
+    Route::post('/login', [SessionController::class, 'store'])->name('login');
+    Route::get('/logout', [SessionController::class, 'destroy'])->name('logout');
 
-Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
-Route::get('/login', [SessionController::class, 'create'])->name('login');
-Route::post('/login', [SessionController::class, 'store'])->name('login');
-Route::get('/logout', [SessionController::class, 'destroy'])->name('logout');
-Route::get('/first-login', [RegisteredUserController::class, 'firstLogin'])->name('first-login');
+//Профиль
+Route::get('/profile', [ProfileController::class, 'index'])->middleware(['auth', CompleteProfile::class])->name('profile');
+//Заполнение профиля
+Route::get('/complete-profile', [ProfileController::class, 'completeProfile'])->name('complete-profile');
+Route::post('/complete-profile', [ProfileController::class, 'store'])->name('complete-profile.store');
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

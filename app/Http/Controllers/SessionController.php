@@ -37,4 +37,5 @@ class SessionController extends Controller
 
         return redirect('/');
     }
+
 }
