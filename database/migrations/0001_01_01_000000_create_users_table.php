@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\UserGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->boolean('delegate');
             $table->string('birth_date');
             $table->string('sex');
+            $table->foreignIdFor(UserGroup::class)->default('Зарегистрированный покупатель');
             $table->rememberToken();
             $table->timestamps();
         });

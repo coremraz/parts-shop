@@ -29,13 +29,8 @@ class RegisteredUserController extends Controller
         // Отправка события Registered
         event(new Registered($user));
 
-        Auth::login($user);
+         Auth::login($user);
 
-        return redirect('/');
-    }
-
-    public function firstLogin()
-    {
-        return view('auth.first-login-info');
+        return redirect('/email/verify');
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -22,11 +24,32 @@ class ProfileController extends Controller
 
         public function store()
         {
+
+            $validator = Validator::make(request()->all(), [
+                'birth_date' => ['required'],
+                'sex' => ['required'],
+                'inn' => ['max:255'],
+                'company_name' => ['max:255'],
+            ]);
+
+            if ($validator->fails()) {
+                dd($validator->errors());
+            }
+
             $attributes = request()->validate([
                 'birth_date' => ['required'],
                 'sex' => ['required'],
-                'delegate' => ['required'],
+                'inn' => ['max:255'],
+                'company_name' => ['max:255'],
             ]);
+
+            if (!empty($attributes['inn']) && !empty($attributes['company_name'])) {
+                $company = new Company();
+                $company->name = $attributes['company_name'];
+                $company->inn = $attributes['inn'];
+                $company->save();
+            }
+
             $attributes['delegate'] = request()->filled('delegate') ? 1 : 0;
             $user = Auth::user();
             $user->fill($attributes);

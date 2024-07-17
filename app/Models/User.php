@@ -54,4 +54,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return !empty($this->sex) && !empty($this->birth_date);
     }
+
+    public function group()
+    {
+        return $this->belongsTo(UserGroup::class, 'user_group_id');
+    }
 }
