@@ -20,7 +20,7 @@ Route::get('/', function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
     Route::get('/login', [SessionController::class, 'create'])->name('login');
-    Route::post('/login', [SessionController::class, 'store'])->name('login');
+    Route::post('/login', [SessionController::class, 'store'])->name('login.store');
     Route::get('/logout', [SessionController::class, 'destroy'])->name('logout');
 
 //Профиль

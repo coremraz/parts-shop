@@ -1,7 +1,7 @@
 @extends('components.layouts.base')
 
 @section('content')
-    <form action="{{route('register')}}" method="POST" class="flex flex-col w-1/6 m-4">
+    <form action="{{route('register.store')}}" method="POST" class="flex flex-col w-1/6 m-4">
         @csrf
         <label>ФИО</label>
         <x-ui.input name="fio"/>
