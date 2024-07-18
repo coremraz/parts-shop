@@ -22,39 +22,43 @@ class ProfileController extends Controller
         return view('auth.complete-profile');
     }
 
-        public function store()
-        {
+    public function store()
+    {
 
-            $validator = Validator::make(request()->all(), [
-                'birth_date' => ['required'],
-                'sex' => ['required'],
-                'inn' => ['max:255'],
-                'company_name' => ['max:255'],
-            ]);
+        $validator = Validator::make(request()->all(), [
+            'birth_date' => ['required'],
+            'sex' => ['required'],
+            'inn' => ['max:255'],
+            'company_name' => ['max:255'],
+        ]);
 
-            if ($validator->fails()) {
-                dd($validator->errors());
-            }
+        if ($validator->fails()) {
+            dd($validator->errors());
+        }
 
-            $attributes = request()->validate([
-                'birth_date' => ['required'],
-                'sex' => ['required'],
-                'inn' => ['max:255'],
-                'company_name' => ['max:255'],
-            ]);
+        $attributes = request()->validate([
+            'birth_date' => ['required'],
+            'sex' => ['required'],
+            'inn' => ['digits:10'],
+            'company_name' => ['max:255'],
+        ]);
 
-            if (!empty($attributes['inn']) && !empty($attributes['company_name'])) {
+        if (!empty($attributes['inn']) && !empty($attributes['company_name'])) {
+            if (!Company::where('inn', $attributes['inn'])->exists()) {
                 $company = new Company();
                 $company->name = $attributes['company_name'];
                 $company->inn = $attributes['inn'];
                 $company->save();
             }
+        }
+
 
             $attributes['delegate'] = request()->filled('delegate') ? 1 : 0;
             $user = Auth::user();
+            $user->company_id = Company::where('inn', $attributes['inn'])->first()->id;
             $user->fill($attributes);
             $user->save();
 
             return redirect('profile');
         }
-}
+    }

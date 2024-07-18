@@ -26,8 +26,8 @@ Route::get('/', function () {
 //Профиль
 Route::get('/profile', [ProfileController::class, 'index'])->middleware(['auth', CompleteProfile::class])->name('profile');
 //Заполнение профиля
-Route::get('/complete-profile', [ProfileController::class, 'completeProfile'])->middleware(['auth', 'verified'])->name('complete-profile');
-Route::post('/complete-profile', [ProfileController::class, 'store'])->middleware(['auth', 'verified'])->name('complete-profile.store');
+Route::get('/complete-profile', [ProfileController::class, 'completeProfile'])->middleware(['auth'])->name('complete-profile');
+Route::post('/complete-profile', [ProfileController::class, 'store'])->middleware(['auth'])->name('complete-profile.store');
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

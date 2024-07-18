@@ -8,6 +8,7 @@
         <span>Телефон: {{$user->number}}</span>
         <span>Email: {{$user->email}}</span>
         <span>Группа: {{$user->group()->first()->name}}</span>
+        <span>Компания: {{$user->company()->first()->name}}</span>
         <x-ui.button><a href="{{route('logout')}}">Выйти</a></x-ui.button>
     </div>
 @endsection

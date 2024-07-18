@@ -18,8 +18,8 @@ class RegisteredUserController extends Controller
     public function store()
     {
         $attributes = request()->validate([
-            'fio' => ['required'],
-            'number' => ['required'],
+            'fio' => ['required', 'string', 'max:255'],
+            'number' => ['required', "regex:/^(\+7|7|8)?[\s\-]?\(?\d{3}\)?[\s\-]?\d{1}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/"],
             'email' => ['required', 'email'],
             'password' => ['required', Password::min(6), 'confirmed']
         ]);
