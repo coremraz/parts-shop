@@ -3,7 +3,7 @@
         <h2 class="text-3xl font-bold text-center mb-8">О компании</h2>
         <div class="flex flex-col md:flex-row items-center justify-center">
             <div class="md:w-1/2 mb-8 md:mb-0">
-                <img src="https://placeimg.com/640/480/tech" alt="О компании" class="rounded-lg shadow-md">
+                <img src="https://via.placeholder.com/600x400" alt="О компании" class="rounded-lg shadow-md">
             </div>
             <div class="md:w-1/2 md:pl-8">
                 <p class="text-gray-700 leading-relaxed mb-6">

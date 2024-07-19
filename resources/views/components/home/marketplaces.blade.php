@@ -1,7 +1,7 @@
 <div class="bg-gray-100 p-6">
     <div class="container mx-auto flex">
         <div class="w-1/2 pr-6">
-            <img src="banner-image.jpg" alt="Информационный баннер" class="rounded-lg shadow-md">
+            <img src="https://via.placeholder.com/1280x800" alt="Информационный баннер" class="rounded-lg shadow-md">
         </div>
         <div class="w-1/2 pl-6">
             <div class="flex flex-col space-y-4">
