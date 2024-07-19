@@ -4,26 +4,26 @@
 </div>
 <x-ui.carousel id="brands">
     {{-- Начало цикла новостей --}}
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
-    <div class="flex-shrink-0 m-4 w-100 rounded-lg shadow-md">
-        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover rounded-t-lg">
+    <div class="flex-shrink-0 m-4 w-100">
+        <img src="https://via.placeholder.com/200x100" alt="brand" class="w-full h-48 object-cover">
     </div>
     {{-- Конец цикла новостей --}}
     {{-- Скопируйте и вставьте предыдущий блок div, чтобы добавить больше новостей --}}
