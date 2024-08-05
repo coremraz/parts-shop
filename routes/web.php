@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminProductKindController;
 use App\Http\Controllers\ProductController;
@@ -66,6 +67,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/product-kinds', [AdminProductKindController::class, 'store'])->name('product-kinds.store');
     Route::get('/product-kinds/{productKind}/edit', [AdminProductKindController::class, 'edit'])->name('product-kinds.edit');
     Route::patch('/product-kinds/{productKind}/update', [AdminProductKindController::class, 'update'])->name('product-kinds.update');
+
+    // Orders
+    Route::get('/orders-manage', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders-upload', [AdminOrderController::class, 'upload'])->name('orders.upload');
+
 });
 
 //product kind props

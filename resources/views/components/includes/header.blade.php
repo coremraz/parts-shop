@@ -14,7 +14,7 @@
             <div class="container mx-auto px-4 flex items-center justify-between">
                 <div class="flex w-screen">
                 <button
-                    class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-10 mr-3 focus:outline-none focus:shadow-outline"
+                    class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-10тз mr-3 focus:outline-none focus:shadow-outline"
                     type="button">
                     Каталог
                 </button>

@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_compositions', function (Blueprint $table) {
-            $table->id();
-            $table->integer('quantity');
-            $table->foreignIdFor(Order::class);
-            $table->foreignIdFor(Product::class);
-            $table->timestamps();
+        Schema::table('order_compositions', function (Blueprint $table) {
+            Schema::table('order_compositions', function (Blueprint $table) {
+                $table->id();
+                $table->integer('quantity');
+                $table->foreignIdFor(Order::class);
+                $table->foreignIdFor(Product::class);
+                $table->timestamps();
+            });
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_compositions');
+        //
     }
 };
