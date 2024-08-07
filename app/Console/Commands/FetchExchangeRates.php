@@ -57,9 +57,6 @@ class FetchExchangeRates extends Command
             }
         }
 
-// Очищаем таблицу перед записью
-        Exchange_rate::truncate();
-
 // Создаем новую запись
         $exchangeRateSDB = Exchange_rate::create($exchangeRates);
     }
