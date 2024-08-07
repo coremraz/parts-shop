@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel Admin Panel</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100 font-sans">
+@extends('components.layouts.admin-layout')
+
+@section('content')
+
+
+
 <div class="flex flex-col container mx-auto p-8">
     <h1 class="text-3xl font-bold mb-6">Admin Panel</h1>
 
@@ -27,5 +24,4 @@
         </x-ui.admin.card>
     </div>
 </div>
-</body>
-</html>
+@endsection

@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100 font-sans">
+@extends('components.layouts.admin-layout')
 
-<div class="container mx-auto p-4">
+@section('content')
+
+
+
+    <div class="container mx-auto p-4">
         <table class="w-1/2 table-auto">
             <thead>
             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -29,6 +25,4 @@
 
         </table>
 </div>
-
-</body>
-</html>
+@endsection
