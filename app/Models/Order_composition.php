@@ -13,4 +13,8 @@ class Order_composition extends Model
 
     protected $fillable = ['quantity', 'product_id', 'order_id'];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

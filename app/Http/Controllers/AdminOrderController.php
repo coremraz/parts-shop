@@ -15,7 +15,8 @@ class AdminOrderController extends Controller
 {
     public function index()
     {
-        return view('admin.orders.index');
+        $orders = Order::all();
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function upload(Request $request)
@@ -84,5 +85,19 @@ class AdminOrderController extends Controller
         }
 
         return redirect()->back()->with('error', 'Ошибка загрузки файла!');
+    }
+
+    public function show(Order $order) {
+        return view('admin.orders.show', compact('order'));
+    }
+
+    public function updateReceived(Request $request)
+    {
+        $order = Order::find($request->input('id'));
+        if ($order) {
+            $order->received = $request->input('received');
+            $order->save();
+        }
+        return response()->json(['success' => true]);
     }
 }
