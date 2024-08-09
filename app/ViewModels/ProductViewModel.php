@@ -128,7 +128,7 @@ class ProductViewModel
                 if ($this->getExpectedDeliveries($this->product->id)) {
                     return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
                 } else {
-                    return "Нет в наличии. " . $deliveryTime;
+                    return "Нет в наличии. Срок поставки: " . $deliveryTime;
                 }
             }
     }
