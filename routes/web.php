@@ -70,7 +70,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Orders
     Route::get('/orders-manage', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders-manage/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders-upload', [AdminOrderController::class, 'upload'])->name('orders.upload');
+    Route::post('/orders-manage/update-received', [AdminOrderController::class, 'updateReceived'])->name('orders.updateReceived');
 
 });
 

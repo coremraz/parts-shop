@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100 font-sans">
-<div class="container mx-auto p-8">
+@extends('components.layouts.admin-layout')
+
+@section('content')
+
+
+    <div class="container mx-auto p-8">
     <h1 class="text-3xl font-bold mb-6">Products</h1>
     <x-ui.admin.button href="{{ route('admin.product.create') }}">Add new product</x-ui.admin.button>
     <div class="bg-white shadow-md rounded my-6">
@@ -47,5 +43,4 @@
 
     {{ $products->links() }}
 </div>
-</body>
-</html>
+@endsection
