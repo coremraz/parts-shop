@@ -94,6 +94,8 @@ class UpdateProductStock extends Command
 
                     [$title, , $article, $stock] = $cellValues;
 
+
+
                     // Ищем товар по артикулу, если он есть
                     $product = Product::where('article', $article)
                         ->where('composite_product', 0)
@@ -106,11 +108,14 @@ class UpdateProductStock extends Command
                             ->first();
                     }
 
+
                     // Если товар найден, обновляем его остаток
                     if ($product) {
                         $product->stock = (int) $stock;
                         $product->save();
                     }
+
+
                 }
 
                 // Сохраняем текущее время как время последнего успешного обновления

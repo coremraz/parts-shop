@@ -3,6 +3,7 @@
 namespace App\ViewModels;
 
 use App\Models\Delivery_method;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Product_kind;
 
@@ -96,15 +97,38 @@ class ProductViewModel
         }
     }
 
+    public function getExpectedDeliveries($id)
+    {
+        $orders = Order::all()->where("received", 0);
+        $quantity = null;
+
+        foreach ($orders as $order) {
+            $details = $order->details()->where('product_id', $id)->get();
+
+            foreach ($details as $detail) {
+                $quantity += $detail->quantity;
+            }
+        }
+
+        return $quantity;
+    }
+
     public function getStock(): string
     {
-        // Что выводить в стоке
-        return match (true) {
-            $this->product->stock > 0 => "В наличии: " . $this->product->stock . " шт.",
-            $this->product->stock == 0 => "Срок поставки: " . $this->product->vendor()->first()->delivery_time,
-            default => "Ожидается",
-        };
+             // Получаем вендора
+        dd($this->product->vendor()->get());
+            $deliveryTime = $this->product->vendor()->first()->delivery_time;
+            if ($this->product->stock > 0) {
+               return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) ."шт. ожидается)";
+            } elseif ($this->product->stock <= 0) {
+                if ($this->getExpectedDeliveries($this->product->id)) {
+                    return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
+                } else {
+                    return "Нет в наличии. " . $deliveryTime;
+                }
+            }
     }
+
 
     public function getLogo(): string
     {
@@ -166,7 +190,10 @@ class ProductViewModel
         // Получаем элементы комплектации с предзагрузкой связанных продуктов
         foreach ($this->getKind()->compositeElements()->with('elements.product')->get()->sortBy('sorting') as $element) {
             if ($this->getKind()->compositeElements()->with('elements.product')->get()) {
-                $complectation[$element->element] = $element->elements->where('product_id', $this->product->id)->first()->product->title . " (" . $element->elements->first()->product->article . ")";
+                if ($element->elements->where('product_id', $this->product->id)->first()) {
+                    $complectation[$element->element] = $element->elements->where('product_id', $this->product->id)->first()->product->title . " (" . $element->elements->first()->product->article . ")";
+                }
+
             }
         }
 
