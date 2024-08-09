@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -15,16 +16,11 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    public function store()
+    public function store(StoreUserRequest $request)
     {
-        $attributes = request()->validate([
-            'fio' => ['required', 'string', 'max:255'],
-            'number' => ['required', "regex:/^(\+7|7|8)?[\s\-]?\(?\d{3}\)?[\s\-]?\d{1}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/"],
-            'email' => ['required', 'email'],
-            'password' => ['required', Password::min(6), 'confirmed']
-        ]);
+        $validated = $request->validate();
 
-        $user = User::create($attributes);
+        $user = User::create($validated);
 
         // Отправка события Registered
         event(new Registered($user));

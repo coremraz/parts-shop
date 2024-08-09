@@ -165,8 +165,8 @@ class ProductViewModel
         $complectation = [];
         // Получаем элементы комплектации с предзагрузкой связанных продуктов
         foreach ($this->getKind()->compositeElements()->with('elements.product')->get()->sortBy('sorting') as $element) {
-            if ($element->elements->first()) {
-                $complectation[$element->element] = $element->elements->first()->product->title . " (" . $element->elements->first()->product->article . ")";
+            if ($this->getKind()->compositeElements()->with('elements.product')->get()) {
+                $complectation[$element->element] = $element->elements->where('product_id', $this->product->id)->first()->product->title . " (" . $element->elements->first()->product->article . ")";
             }
         }
 

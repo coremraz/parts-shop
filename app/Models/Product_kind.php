@@ -21,6 +21,7 @@ class Product_kind extends Model
 
     public function compositeElements()
     {
+
         return $this->hasMany(Product_kind_composite_element::class, 'product_kind_id');
     }
 }
