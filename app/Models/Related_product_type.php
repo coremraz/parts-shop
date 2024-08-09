@@ -9,8 +9,10 @@ class Related_product_type extends Model
 {
     use HasFactory;
 
-    public function related_products()
+    public function relatedProducts()
     {
         return $this->hasMany(Related_product::class);
     }
+
+
 }

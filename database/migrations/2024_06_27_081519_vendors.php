@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('logo');
             $table->string('description');
             $table->string('country');
+            $table->string('delivery_time')->nullable();
+            $table->string('warranty')->nullable();
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('product_kinds', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('name_prural');
+            $table->string('name_plural');
             $table->timestamps();
         });
 

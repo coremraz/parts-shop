@@ -9,6 +9,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $table = 'products';
+    protected $guarded = ['id'];
 
     public function kinds()
     {
@@ -23,6 +24,26 @@ class Product extends Model
     public function analogies()
     {
         return $this->hasMany(Analog::class);
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
+
+    public function composite()
+    {
+        return $this->hasMany(Product_composite_element::class);
     }
 
 }
