@@ -97,10 +97,10 @@ class ProductViewModel
         }
     }
 
-    public function getExpectedDeliveries($id)
+    public function getExpectedDeliveries($id) :int
     {
         $orders = Order::all()->where("received", 0);
-        $quantity = null;
+        $quantity = 0;
 
         foreach ($orders as $order) {
             $details = $order->details()->where('product_id', $id)->get();
@@ -116,10 +116,14 @@ class ProductViewModel
     public function getStock(): string
     {
              // Получаем вендора
-        dd($this->product->vendor()->get());
             $deliveryTime = $this->product->vendor()->first()->delivery_time;
             if ($this->product->stock > 0) {
-               return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) ."шт. ожидается)";
+                if ($this->getExpectedDeliveries($this->product->id)) {
+                    return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) ."шт. ожидается)";
+                } else {
+                    return "В наличии: " . $this->product->stock . " шт.";
+                }
+
             } elseif ($this->product->stock <= 0) {
                 if ($this->getExpectedDeliveries($this->product->id)) {
                     return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
