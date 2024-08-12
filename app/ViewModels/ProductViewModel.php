@@ -97,7 +97,7 @@ class ProductViewModel
         }
     }
 
-    public function getExpectedDeliveries($id) :int
+    public function getExpectedDeliveries($id): int
     {
         $orders = Order::all()->where("received", 0);
         $quantity = 0;
@@ -115,22 +115,22 @@ class ProductViewModel
 
     public function getStock(): string
     {
-             // Получаем вендора
-            $deliveryTime = $this->product->vendor()->first()->delivery_time;
-            if ($this->product->stock > 0) {
-                if ($this->getExpectedDeliveries($this->product->id)) {
-                    return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) ."шт. ожидается)";
-                } else {
-                    return "В наличии: " . $this->product->stock . " шт.";
-                }
-
-            } elseif ($this->product->stock <= 0) {
-                if ($this->getExpectedDeliveries($this->product->id)) {
-                    return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
-                } else {
-                    return "Нет в наличии. Срок поставки: " . $deliveryTime;
-                }
+        // Получаем вендора
+        $deliveryTime = $this->product->vendor()->first()->delivery_time;
+        if ($this->product->stock > 0) {
+            if ($this->getExpectedDeliveries($this->product->id)) {
+                return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) . "шт. ожидается)";
+            } else {
+                return "В наличии: " . $this->product->stock . " шт.";
             }
+
+        } elseif ($this->product->stock <= 0) {
+            if ($this->getExpectedDeliveries($this->product->id)) {
+                return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
+            } else {
+                return "Нет в наличии. Срок поставки: " . $deliveryTime;
+            }
+        }
     }
 
 
@@ -191,11 +191,14 @@ class ProductViewModel
         }
 
         $complectation = [];
+        $elements = $this->getKind()->compositeElements()->with('elements.product')->get()->sortBy('sorting');
         // Получаем элементы комплектации с предзагрузкой связанных продуктов
-        foreach ($this->getKind()->compositeElements()->with('elements.product')->get()->sortBy('sorting') as $element) {
-            if ($this->getKind()->compositeElements()->with('elements.product')->get()) {
+        if ($elements) {
+            foreach ($elements as $element) {
                 if ($element->elements->where('product_id', $this->product->id)->first()) {
-                    $complectation[$element->element] = $element->elements->where('product_id', $this->product->id)->first()->product->title . " (" . $element->elements->first()->product->article . ")";
+                    $product = $element->elements->where('product_id', $this->product->id)->first()->product;
+                    dd($product);
+                    $complectation[$element->element][] = $product->title . " (" . $product->article . ")";
                 }
 
             }
