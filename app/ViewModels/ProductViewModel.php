@@ -197,7 +197,6 @@ class ProductViewModel
             foreach ($elements as $element) {
                 if ($element->elements->where('product_id', $this->product->id)->first()) {
                     $product = $element->elements->where('product_id', $this->product->id)->first()->product;
-                    dd($product);
                     $complectation[$element->element][] = $product->title . " (" . $product->article . ")";
                 }
 
