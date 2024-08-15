@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 Schedule::command('fetch:exchange-rates')->dailyAt('05:00')->timezone('Europe/Moscow');
 Schedule::command('products:update-stock')->hourly();
+Schedule::command('products:updateCompositePrice')->dailyAt('00:00')->timezone('Europe/Moscow');
+Schedule::command('products:updateCompositePrice')->dailyAt('12:00')->timezone('Europe/Moscow');
+Schedule::command('products:updateCompositeStock')->dailyAt('12:00')->timezone('Europe/Moscow');

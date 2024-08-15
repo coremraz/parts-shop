@@ -9,7 +9,7 @@ use App\Models\Product_kind;
 
 class ProductViewModel
 {
-    protected $product;
+    public $product;
 
     public function __construct(Product $product)
     {
@@ -88,6 +88,10 @@ class ProductViewModel
     public function getPrice(): string
     {
         // Что выводить в цене
+
+        //Расчёт цены для комплектов
+
+
         if ($this->product->special_price) {
             return $this->product->special_price . " ₽";
         } else if (!$this->product->special_price && !$this->product->price) {
@@ -115,6 +119,7 @@ class ProductViewModel
 
     public function getStock(): string
     {
+
         // Получаем вендора
         $deliveryTime = $this->product->vendor()->first()->delivery_time;
         if ($this->product->stock > 0) {
@@ -224,5 +229,36 @@ class ProductViewModel
         }
 
         return $categoryIds;
+    }
+
+    public function getComplectationProducts()
+    {
+        $complectation = $this->getComplectation();
+        $products = [];
+
+        foreach ($complectation as $type) {
+            preg_match('/\(([^)]+)\)/', $type[0], $matches);
+            array_push($products, Product::where('article', $matches[1])->first());
+        }
+
+        return $products;
+    }
+
+    public function getComplectationStock()
+    {
+        if ($this->product->composite_product == 1) {
+            $products = $this->getComplectationProducts();
+            $productWithMinQuantity = collect($products)->min(function ($product) {
+                return [$product->stock, $product];
+            });
+
+            //Если кабельный ввод, то умножаем на 3
+            //Скорее всего, это нужно допилить
+
+            if(preg_match('/кабельный ввод/iu', $productWithMinQuantity[1]->short_description, $matches)) {
+                return floor($productWithMinQuantity[0] / 3);
+            }
+            return $productWithMinQuantity[0];
+        }
     }
 }
