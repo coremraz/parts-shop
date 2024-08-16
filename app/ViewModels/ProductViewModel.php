@@ -243,22 +243,32 @@ class ProductViewModel
 
         return $products;
     }
-
-    public function getComplectationStock()
+    public function getComplectationStock(): int
     {
         if ($this->product->composite_product == 1) {
             $products = $this->getComplectationProducts();
-            $productWithMinQuantity = collect($products)->min(function ($product) {
-                return [$product->stock, $product];
+
+            // Проверка на пустой массив $products
+            if (empty($products)) {
+                return 0; // Возвращаем 0, если нет составных продуктов
+            }
+
+            $products = collect($products);
+
+            $productWithMinQuantity = $products->min(function ($product) {
+                return [$product->stock ?? 0, $product]; // Обработка null в stock
             });
 
-            //Если кабельный ввод, то умножаем на 3
-            //Скорее всего, это нужно допилить
+            $minStock = $productWithMinQuantity[0];
+            $product = $productWithMinQuantity[1];
 
-            if(preg_match('/кабельный ввод/iu', $productWithMinQuantity[1]->short_description, $matches)) {
-                return floor($productWithMinQuantity[0] / 3);
+            if (preg_match('/кабельный ввод/iu', $product->short_description, $matches)) {
+                return (int)floor($minStock / 3); // Явное приведение к int
             }
-            return $productWithMinQuantity[0];
+
+            return (int)$minStock; // Явное приведение к int
         }
+
+        return $this->product->stock ?? 0; // Возврат stock для некомплектов
     }
 }
