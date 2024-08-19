@@ -109,11 +109,13 @@ class UpdateProductStock extends Command
                             ->first();
                     }
 
-                    // Если товар найден, обновляем его остаток и добавляем артикул в массив
+                    // Если товар найден, обновляем его остаток и добавляем product в массив
                     if ($product) {
-                        $product->stock = (int)$stock;
-                        $product->save();
-                        $updatedProductArticles[] = $product->article;
+                        if ($product->stock != (int)$stock) {
+                            $product->stock = (int)$stock;
+                            $product->save();
+                            $changedProducts[] = $product;
+                        }
                     }
                 }
 
@@ -122,8 +124,8 @@ class UpdateProductStock extends Command
                 $this->saveLastSuccessfulUpdateTime();
                 $this->info('Остатки товаров успешно обновлены.');
 
-                // Отправляем событие с массивом обновленных артикулов
-                ProductStockUpdated::dispatch($updatedProductArticles);
+                // Отправляем событие с массивом обновленных products
+                ProductStockUpdated::dispatch($changedProducts);
 
             } catch (\Exception $e) {
                 $this->error('Произошла ошибка при обновлении остатков: ' . $e->getMessage());

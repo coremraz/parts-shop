@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Product;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -14,7 +15,7 @@ class ProductStockUpdated
      *
      * @var array
      */
-    public $updatedProductArticles;
+    public $changedProducts;
 
     /**
      * Создать новый экземпляр события.
@@ -22,8 +23,8 @@ class ProductStockUpdated
      * @param  array  $updatedProductArticles
      * @return void
      */
-    public function __construct(array $updatedProductArticles)
+    public function __construct(array $changedProducts)
     {
-        $this->updatedProductArticles = $updatedProductArticles;
+        $this->changedProducts = $changedProducts;
     }
 }
