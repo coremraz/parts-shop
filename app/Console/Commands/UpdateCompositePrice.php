@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\UpdateCompositeProductPrice;
 use App\Models\Setting;
 use App\ViewModels\ProductViewModel;
 use Illuminate\Console\Command;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class UpdateCompositePrice extends Command
@@ -42,27 +45,24 @@ class UpdateCompositePrice extends Command
      */
     public function handle()
     {
-        //Расчёт цены для комплектов
+        // Расчёт цены для комплектов (вычисляем один раз)
         $productsTotalPrice = Product::where('composite_product', 0)->sum('price');
 
+        // Проверка условия ДО цикла chunk
         if (Setting::find(1)->value != $productsTotalPrice) {
             $totalSum = Setting::find(1);
             $totalSum->value = $productsTotalPrice;
-//            $totalSum->save();
-            $compositeProducts = Product::where('composite_product', 1)->get();
+            $totalSum->save();
 
-            foreach ($compositeProducts as $product) {
-                $productModel = new ProductViewModel($product);
-                $complectation = $productModel->getComplectationProducts();
-
-                foreach ($complectation as $item) {
-                    $product->price += $item->price;
-                }
-
-                $product->save();
-            }
+            Product::with('complectationQuantity')
+                ->where('composite_product', 1)
+                ->chunk(100, function ($compositeProducts) {
+                    foreach ($compositeProducts as $product) {
+                        $job = new UpdateCompositeProductPrice($product);
+                        dispatch($job);
+                    }
+                    echo  "Chunk dispatched: " . count($compositeProducts) . " products, " . "date: " . now() . "\n";
+                });
         }
-
     }
-
 }

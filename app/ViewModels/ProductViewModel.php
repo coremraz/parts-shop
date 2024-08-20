@@ -196,15 +196,19 @@ class ProductViewModel
         }
 
         $complectation = [];
-        $elements = $this->getKind()->compositeElements()->with('elements.product')->get()->sortBy('sorting');
-        // Получаем элементы комплектации с предзагрузкой связанных продуктов
-        if ($elements) {
-            foreach ($elements as $element) {
-                if ($element->elements->where('product_id', $this->product->id)->first()) {
-                    $product = $element->elements->where('product_id', $this->product->id)->first()->product;
-                    $complectation[$element->element][] = $product->title . " (" . $product->article . ")";
-                }
+        $elements = $this->getKind()->compositeElements()
+            ->with(['elements' => function ($query) {
+                $query->where('product_id', $this->product->id)
+                    ->with('product');
+            }])
+            ->get()
+            ->sortBy('sorting');
 
+        // Iterate only through relevant elements
+        foreach ($elements as $element) {
+            foreach ($element->elements as $relatedElement) {
+                $product = $relatedElement->product;
+                $complectation[$element->element][] = $product->title . " (" . $product->article . ")";
             }
         }
 
@@ -234,39 +238,62 @@ class ProductViewModel
     public function getComplectationProducts()
     {
         $complectation = $this->getComplectation();
-        $products = [];
 
-        foreach ($complectation as $type) {
-            preg_match('/\(([^)]+)\)/', $type[0], $matches);
-            array_push($products, Product::where('article', $matches[1])->first());
+
+        // Extract articles directly using array_map and preg_match
+        $articles = [];
+        foreach ($complectation as $items) {
+            $articles = array_merge($articles, array_map(function ($item) {
+                preg_match('/\(([^)]+)\)/', $item, $matches);
+                return $matches[1];
+            }, $items));
         }
 
-        return $products;
+        // Fetch products with eager loading of any necessary relationships
+        $products = Product::whereIn('article', $articles)
+            ->with(['complectationQuantity']) // Example of eager loading
+            ->get();
+
+        // Build a map of products keyed by article for efficient lookup
+        $productsByArticle = $products->keyBy('article');
+
+        $result = [];
+        // Iterate through the complectation data and directly access products from the map
+        foreach ($complectation as $items) {
+            foreach ($items as $item) {
+                preg_match('/\(([^)]+)\)/', $item, $matches);
+                $article = $matches[1];
+                if (isset($productsByArticle[$article])) {
+                    $result[] = $productsByArticle[$article];
+                }
+            }
+        }
+
+
+        return $result;
     }
-    public function getComplectationStock(): int
+
+    public function getComplectationStock()
     {
         if ($this->product->composite_product == 1) {
             $products = $this->getComplectationProducts();
+
 
             // Проверка на пустой массив $products
             if (empty($products)) {
                 return 0; // Возвращаем 0, если нет составных продуктов
             }
 
-            $products = collect($products);
+            $productStocks = [];
 
-            $productWithMinQuantity = $products->min(function ($product) {
-                return [$product->stock ?? 0, $product]; // Обработка null в stock
-            });
+            foreach ($products as $product) {
+                $complectationQuantity = $product->complectationQuantity()->first();
 
-            $minStock = $productWithMinQuantity[0];
-            $product = $productWithMinQuantity[1];
-
-            if (preg_match('/кабельный ввод/iu', $product->short_description, $matches)) {
-                return (int)floor($minStock / 3); // Явное приведение к int
+                // Проверяем, что $complectationQuantity не равен null
+                $productStocks[] = (int)floor($product->stock / $complectationQuantity->quantity);
             }
 
-            return (int)$minStock; // Явное приведение к int
+            return min($productStocks);
         }
 
         return $this->product->stock ?? 0; // Возврат stock для некомплектов

@@ -46,6 +46,8 @@ class Product extends Model
         return $this->hasMany(Product_composite_element::class);
     }
 
+
+    //к какому комплекту товар относится
     public function parentComplectation()
     {
         return $this->belongsToMany(
@@ -54,6 +56,11 @@ class Product extends Model
             'product_element_id',                // Внешний ключ для текущей модели в таблице связи
             'product_id'         // Внешний ключ для связанной модели в таблице связи
         )->as('elements'); // Добавляем алиас для связи
+    }
+
+    public function complectationQuantity()
+    {
+        return $this->hasOne(Product_composite_element::class, 'product_element_id', 'id');
     }
 
 }

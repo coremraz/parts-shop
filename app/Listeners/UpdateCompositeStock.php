@@ -21,9 +21,11 @@ class UpdateCompositeStock
 
         foreach ($event->changedProducts as $product) {
             foreach ($product->parentComplectation()->get() as $complectation) {
-                $viewModel = new ProductViewModel($product);
-                $complectation->stock = $viewModel->getComplectationStock();
-                $complectation->save();
+                $ComplectationModel = new ProductViewModel($complectation);
+                if ($ComplectationModel) {
+                    $ComplectationModel->product->stock = $ComplectationModel->getComplectationStock();
+                    $complectation->save();
+                }
             }
         }
 
