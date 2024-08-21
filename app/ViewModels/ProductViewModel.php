@@ -79,10 +79,11 @@ class ProductViewModel
                 $characteristics["<b>" . $kind_prop->name . "</b>"] = "";
                 // Иначе, если значение свойства существует, добавляем название свойства и его значение
             } else if ($kind_prop->values->where('product_id', $this->product->id)->first()?->value) {
-                $characteristics[$kind_prop->name] = ": " . $kind_prop->values->first()->value;
+                $characteristics[$kind_prop->name] = ": " . $kind_prop->values->where('product_id', $this->product->id)->first()->value;
             }
         }
         return $characteristics;
+
     }
 
     public function getPrice(): string

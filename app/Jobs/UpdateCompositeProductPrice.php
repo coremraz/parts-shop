@@ -30,7 +30,7 @@ class UpdateCompositeProductPrice implements ShouldQueue
         $this->product->price = array_sum(array_map(function ($item) {
             $quantity =  $item->complectationQuantity()->first()->quantity;
             if ($this->product->id == 34506) {
-                Log::info("id: " . $this->product . "Q: " .$item->complectationQuantity()->first()->quantity);
+                Log::info("id: " . $this->product->id . "Q: " .$item->complectationQuantity());
             }
             return $item->price * $quantity;
         }, $complectation));
