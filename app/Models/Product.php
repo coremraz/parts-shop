@@ -60,7 +60,9 @@ class Product extends Model
 
     public function complectationQuantity()
     {
-        return $this->hasOne(Product_composite_element::class, 'product_element_id', 'id');
+        return $this->hasMany(Product_composite_element::class, 'product_element_id', 'id');
     }
+
+
 
 }
