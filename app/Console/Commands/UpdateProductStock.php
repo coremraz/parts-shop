@@ -108,14 +108,28 @@ class UpdateProductStock extends Command
                             ->where('composite_product', 0)
                             ->first();
                     }
+                    $changedProducts = [];
 
                     // Если товар найден, обновляем его остаток и добавляем product в массив
                     if ($product) {
                         if ($product->stock != (int)$stock) {
                             $product->stock = (int)$stock;
                             $product->save();
-                            $changedProducts[] = $product;
+                            $changedProducts[] = $product; // Добавляем модель в массив
                         }
+                        $updatedProductArticles[] = $article; // Добавляем артикул в массив
+                    }
+                }
+
+                // Обновляем остатки товаров, которых нет в отчете, на 0
+                $productsNotUpdated = Product::whereNotIn('article', $updatedProductArticles)
+                    ->where('composite_product', 0)
+                    ->get();
+
+                foreach ($productsNotUpdated as $product) {
+                    if ($product->stock != 0) {
+                        $product->stock = 0;
+                        $product->save();
                     }
                 }
 
@@ -124,7 +138,7 @@ class UpdateProductStock extends Command
                 $this->saveLastSuccessfulUpdateTime();
                 $this->info('Остатки товаров успешно обновлены.');
 
-                // Отправляем событие с массивом обновленных products
+                // Отправляем событие
                 ProductStockUpdated::dispatch($changedProducts);
 
             } catch (\Exception $e) {
