@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('value');
             $table->string('comment')->nullable();
-            $table->string('checkSumPriceElements');
             $table->timestamps();
         });
     }

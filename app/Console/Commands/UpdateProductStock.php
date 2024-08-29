@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Dflydev\DotAccessData\Data;
+use App\Events\ProductStockUpdated;
 use Illuminate\Console\Command;
 use App\Models\Product;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -67,6 +67,9 @@ class UpdateProductStock extends Command
                 $spreadsheet = IOFactory::load($this->reportFilePath);
                 $worksheet = $spreadsheet->getActiveSheet();
 
+                // Создаем массив для хранения артикулов обновленных товаров
+                $updatedProductArticles = [];
+
                 // Начинаем обработку с 8 строки, пропуская заголовки и суммарную строку
                 foreach ($worksheet->getRowIterator(8) as $row) {
                     $columnIndex = 1; // Индекс колонки 'A'
@@ -94,8 +97,6 @@ class UpdateProductStock extends Command
 
                     [$title, , $article, $stock] = $cellValues;
 
-
-
                     // Ищем товар по артикулу, если он есть
                     $product = Product::where('article', $article)
                         ->where('composite_product', 0)
@@ -107,22 +108,39 @@ class UpdateProductStock extends Command
                             ->where('composite_product', 0)
                             ->first();
                     }
+                    $changedProducts = [];
 
-
-                    // Если товар найден, обновляем его остаток
+                    // Если товар найден, обновляем его остаток и добавляем product в массив
                     if ($product) {
-                        $product->stock = (int) $stock;
+                        if ($product->stock != (int)$stock) {
+                            $product->stock = (int)$stock;
+                            $product->save();
+                            $changedProducts[] = $product; // Добавляем модель в массив
+                        }
+                        $updatedProductArticles[] = $article; // Добавляем артикул в массив
+                    }
+                }
+
+                // Обновляем остатки товаров, которых нет в отчете, на 0
+                $productsNotUpdated = Product::whereNotIn('article', $updatedProductArticles)
+                    ->where('composite_product', 0)
+                    ->get();
+
+                foreach ($productsNotUpdated as $product) {
+                    if ($product->stock != 0) {
+                        $product->stock = 0;
                         $product->save();
                     }
-
-
                 }
 
                 // Сохраняем текущее время как время последнего успешного обновления
                 $this->lastSuccessfulUpdateTime = time();
                 $this->saveLastSuccessfulUpdateTime();
-
                 $this->info('Остатки товаров успешно обновлены.');
+
+                // Отправляем событие
+                ProductStockUpdated::dispatch($changedProducts);
+
             } catch (\Exception $e) {
                 $this->error('Произошла ошибка при обновлении остатков: ' . $e->getMessage());
                 return 1;
@@ -143,7 +161,7 @@ class UpdateProductStock extends Command
     {
         $storageFile = storage_path('app/last_stock_update.txt');
         if (file_exists($storageFile)) {
-            return (int) file_get_contents($storageFile);
+            return (int)file_get_contents($storageFile);
         }
 
         return 0;

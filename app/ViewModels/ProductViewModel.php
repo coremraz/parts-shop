@@ -9,7 +9,7 @@ use App\Models\Product_kind;
 
 class ProductViewModel
 {
-    protected $product;
+    public $product;
 
     public function __construct(Product $product)
     {
@@ -78,16 +78,21 @@ class ProductViewModel
             if ($kind_prop->section != 0) {
                 $characteristics["<b>" . $kind_prop->name . "</b>"] = "";
                 // Иначе, если значение свойства существует, добавляем название свойства и его значение
-            } else if ($kind_prop->values->first()?->value) {
-                $characteristics[$kind_prop->name] = ": " . $kind_prop->values->first()->value;
+            } else if ($kind_prop->values->where('product_id', $this->product->id)->first()?->value) {
+                $characteristics[$kind_prop->name] = ": " . $kind_prop->values->where('product_id', $this->product->id)->first()->value;
             }
         }
         return $characteristics;
+
     }
 
     public function getPrice(): string
     {
         // Что выводить в цене
+
+        //Расчёт цены для комплектов
+
+
         if ($this->product->special_price) {
             return $this->product->special_price . " ₽";
         } else if (!$this->product->special_price && !$this->product->price) {
@@ -97,7 +102,7 @@ class ProductViewModel
         }
     }
 
-    public function getExpectedDeliveries($id) :int
+    public function getExpectedDeliveries($id): int
     {
         $orders = Order::all()->where("received", 0);
         $quantity = 0;
@@ -115,22 +120,23 @@ class ProductViewModel
 
     public function getStock(): string
     {
-             // Получаем вендора
-            $deliveryTime = $this->product->vendor()->first()->delivery_time;
-            if ($this->product->stock > 0) {
-                if ($this->getExpectedDeliveries($this->product->id)) {
-                    return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) ."шт. ожидается)";
-                } else {
-                    return "В наличии: " . $this->product->stock . " шт.";
-                }
 
-            } elseif ($this->product->stock <= 0) {
-                if ($this->getExpectedDeliveries($this->product->id)) {
-                    return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
-                } else {
-                    return "Нет в наличии. Срок поставки: " . $deliveryTime;
-                }
+        // Получаем вендора
+        $deliveryTime = $this->product->vendor()->first()->delivery_time;
+        if ($this->product->stock > 0) {
+            if ($this->getExpectedDeliveries($this->product->id)) {
+                return "В наличии: " . $this->product->stock . " шт. (" . $this->getExpectedDeliveries($this->product->id) . "шт. ожидается)";
+            } else {
+                return "В наличии: " . $this->product->stock . " шт.";
             }
+
+        } elseif ($this->product->stock <= 0) {
+            if ($this->getExpectedDeliveries($this->product->id)) {
+                return "Ожидается: " . $this->product->stock + $this->getExpectedDeliveries($this->product->id);
+            } else {
+                return "Нет в наличии. Срок поставки: " . $deliveryTime;
+            }
+        }
     }
 
 
@@ -191,13 +197,19 @@ class ProductViewModel
         }
 
         $complectation = [];
-        // Получаем элементы комплектации с предзагрузкой связанных продуктов
-        foreach ($this->getKind()->compositeElements()->with('elements.product')->get()->sortBy('sorting') as $element) {
-            if ($this->getKind()->compositeElements()->with('elements.product')->get()) {
-                if ($element->elements->where('product_id', $this->product->id)->first()) {
-                    $complectation[$element->element] = $element->elements->where('product_id', $this->product->id)->first()->product->title . " (" . $element->elements->first()->product->article . ")";
-                }
+        $elements = $this->getKind()->compositeElements()
+            ->with(['elements' => function ($query) {
+                $query->where('product_id', $this->product->id)
+                    ->with('product');
+            }])
+            ->get()
+            ->sortBy('sorting');
 
+        // Iterate only through relevant elements
+        foreach ($elements as $element) {
+            foreach ($element->elements as $relatedElement) {
+                $product = $relatedElement->product;
+                $complectation[$element->element][] = $product->title . " (" . $product->article . ")";
             }
         }
 
@@ -222,5 +234,69 @@ class ProductViewModel
         }
 
         return $categoryIds;
+    }
+
+    public function getComplectationProducts()
+    {
+        $complectation = $this->getComplectation();
+
+
+        // Extract articles directly using array_map and preg_match
+        $articles = [];
+        foreach ($complectation as $items) {
+            $articles = array_merge($articles, array_map(function ($item) {
+                preg_match('/\(([^)]+)\)/', $item, $matches);
+                return $matches[1];
+            }, $items));
+        }
+
+        // Fetch products with eager loading of any necessary relationships
+        $products = Product::whereIn('article', $articles)
+            ->with(['complectationQuantity']) // Example of eager loading
+            ->get();
+
+        // Build a map of products keyed by article for efficient lookup
+        $productsByArticle = $products->keyBy('article');
+
+        $result = [];
+        // Iterate through the complectation data and directly access products from the map
+        foreach ($complectation as $items) {
+            foreach ($items as $item) {
+                preg_match('/\(([^)]+)\)/', $item, $matches);
+                $article = $matches[1];
+                if (isset($productsByArticle[$article])) {
+                    $result[] = $productsByArticle[$article];
+                }
+            }
+        }
+
+
+        return $result;
+    }
+
+    public function getComplectationStock()
+    {
+        if ($this->product->composite_product == 1) {
+            $products = $this->getComplectationProducts();
+
+
+            // Проверка на пустой массив $products
+            if (empty($products)) {
+                return 0; // Возвращаем 0, если нет составных продуктов
+            }
+
+            $productStocks = [];
+
+            foreach ($products as $product) {
+                $complectationQuantity = $product->complectationQuantity()->first();
+
+                // Проверяем, что $complectationQuantity не равен null
+                $productStocks[] = (int)floor($product->stock / $complectationQuantity->quantity);
+            }
+
+            return min($productStocks);
+        }
+
+        return $this->product->stock ?? 0; // Возврат stock для некомплектов
     }
 }
