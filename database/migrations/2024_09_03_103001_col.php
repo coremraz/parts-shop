@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->boolean('ozon')->default(0);
-            $table->boolean('ym')->default(0);
-            $table->boolean('vi')->default(0);
+            $table->boolean('chip_dip')->default(0);
+            $table->boolean('elec_ru')->default(0);
         });
     }
 

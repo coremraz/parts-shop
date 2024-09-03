@@ -6,6 +6,7 @@ use App\Models\Order_composition;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Order;
 use App\Models\Product;
@@ -53,25 +54,25 @@ class AdminOrderController extends Controller
                         // Поиск продукта
                         $product = Product::where('title', $productModel)->first();
 
+                        $orderComposition = new Order_composition();
+                        $orderComposition->quantity = $quantity;
+                        $orderComposition->order_id = $order->id;
+                        $orderComposition->product_id = $product ? $product->id : '0';// Сохраняем id продукта, если найден, иначе null
                         if ($product) {
-
-                            $orderComposition = new Order_composition();
-                            $orderComposition->quantity = $quantity;
-                            $orderComposition->product_id = $product->id;
-                            $orderComposition->order_id = $order->id;
-                            try {
-                                $orderComposition->save();
-                            } catch (\Exception $e) {
-                                dd($e->getMessage(), $e->getTraceAsString());
-                            }
-
+                            $orderComposition->status = 'Ок';
                         } else {
-                            echo 'here';
+                            $orderComposition->status = "Ошибка товар $productModel не загружен";
+                            Log::warning("Product not found: {$productModel}", ['order_number' => $orderNumber]);
+                        }
+
+                        try {
+                            $orderComposition->save(); // Сохраняем запись в любом случае
+                        } catch (\Exception $e) {
+                            // ... обработка ошибки сохранения
                         }
 
                         $row++;
                     }
-
                     return redirect()->back()->with('success', 'Данные успешно загружены!');
 
                 } else {
@@ -87,7 +88,8 @@ class AdminOrderController extends Controller
         return redirect()->back()->with('error', 'Ошибка загрузки файла!');
     }
 
-    public function show(Order $order) {
+    public function show(Order $order)
+    {
         return view('admin.orders.show', compact('order'));
     }
 

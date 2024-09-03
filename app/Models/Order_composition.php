@@ -11,7 +11,7 @@ class Order_composition extends Model
     protected $table = "order_compositions";
     protected $guarded = [];
 
-    protected $fillable = ['quantity', 'product_id', 'order_id'];
+    protected $fillable = ['quantity', 'product_id', 'order_id', 'status'];
 
     public function product()
     {
