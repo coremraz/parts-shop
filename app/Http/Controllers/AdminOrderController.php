@@ -27,62 +27,69 @@ class AdminOrderController extends Controller
             $file = $request->file('excel_file');
 
             try {
-                // Загрузка файла Excel
                 $spreadsheet = IOFactory::load($file->getRealPath());
                 $worksheet = $spreadsheet->getActiveSheet();
-
-                // Получение номера заказа из ячейки B1
                 $orderNumber = preg_replace('/[^0-9]/', '', $worksheet->getCell('A1')->getValue());
 
                 if (!Order::where('order_number', $orderNumber)->first()) {
+                    $row = 3;
+                    $missingProducts = []; // Массив для хранения недостающих товаров
 
+                    // Проверяем все товары перед загрузкой
+                    while ($worksheet->getCell('A' . $row)->getValue() !== null) {
+                        $productModel = $worksheet->getCell('A' . $row)->getValue();
+                        $product = Product::where('title', $productModel)->first();
 
-                    // Создание нового заказа
+                        if (!$product) {
+                            $missingProducts[] = $productModel;
+                        }
+
+                        $row++;
+                    }
+
+                    // Если найдены недостающие товары,
+                    // возвращаем ошибку и список товаров
+                    if (!empty($missingProducts)) {
+                        return redirect()->back()->with(
+                            'error',
+                            'В заказе есть товары, которых нет в базе данных:'
+                        )->with(
+                            'missingProducts',
+                            $missingProducts
+                        );
+                    }
+
+                    // Если все товары найдены, создаем заказ и order compositions
                     $order = new Order();
                     $order->order_number = $orderNumber;
                     $order->order_date = Carbon::now();
                     $order->received = 0;
                     $order->save();
 
-                    // Начинаем с третьей строки (индекс 2), так как первые две строки - заголовок
                     $row = 3;
-
                     while ($worksheet->getCell('A' . $row)->getValue() !== null) {
                         $productModel = $worksheet->getCell('A' . $row)->getValue();
                         $quantity = $worksheet->getCell('B' . $row)->getValue();
 
-                        // Поиск продукта
                         $product = Product::where('title', $productModel)->first();
 
                         $orderComposition = new Order_composition();
                         $orderComposition->quantity = $quantity;
                         $orderComposition->order_id = $order->id;
-                        $orderComposition->product_id = $product ? $product->id : '0';// Сохраняем id продукта, если найден, иначе null
-                        if ($product) {
-                            $orderComposition->status = 'Ок';
-                        } else {
-                            $orderComposition->status = "Ошибка товар $productModel не загружен";
-                            Log::warning("Product not found: {$productModel}", ['order_number' => $orderNumber]);
-                        }
-
-                        try {
-                            $orderComposition->save(); // Сохраняем запись в любом случае
-                        } catch (\Exception $e) {
-                            // ... обработка ошибки сохранения
-                        }
+                        $orderComposition->product_id = $product->id;
+                        $orderComposition->status = 'Ок';
+                        $orderComposition->save();
 
                         $row++;
                     }
-                    return redirect()->back()->with('success', 'Данные успешно загружены!');
 
+                    return redirect()->back()->with('success', 'Данные успешно загружены!');
                 } else {
                     return redirect()->back()->withErrors(['error' => 'заказ уже есть в базе']);
                 }
-
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', 'Ошибка при обработке файла: ' . $e->getMessage());
             }
-
         }
 
         return redirect()->back()->with('error', 'Ошибка загрузки файла!');

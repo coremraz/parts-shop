@@ -29,6 +29,18 @@
                 <th class="py-3 px-6 text-center">Подробнее</th>
             </tr>
             </thead>
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                    @if (session('missingProducts'))
+                        <ul>
+                            @foreach (session('missingProducts') as $product)
+                                <li>{{ $product }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endif
             <tbody class="text-gray-800 text-sm font-light">
             @foreach($orders as $order)
                 <tr class="border-b border-gray-200 hover:bg-gray-100">
