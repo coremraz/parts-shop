@@ -1,24 +1,35 @@
 @extends('components.layouts.admin-layout')
 
 @section('content')
-
-
-
     <div class="container mx-auto p-4">
 
-    <h1 class="text-3xl font-bold mb-4">Загрузка данных из Excel</h1>
+        <h1 class="text-3xl font-bold mb-4">Загрузка данных из Excel</h1>
 
-    <form action="{{ route('admin.orders.upload') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="mb-4">
-            <label for="excel_file" class="block text-gray-700 text-sm font-bold mb-2">Выберите файл Excel:</label>
-            <input type="file" name="excel_file" id="excel_file" class="border border-gray-400 p-2 rounded-lg w-full">
-        </div>
-        @error('error')
-        <div class="alert alert-danger">{{ $message }}</div>
-        @enderror
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+                @if (session('missingProducts'))
+                    <ul>
+                        @foreach (session('missingProducts') as $product)
+                            <li>{{ $product }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @endif
 
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Загрузить</button>
+        <form action="{{ route('admin.orders.upload') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-4">
+                <label for="excel_file" class="block text-gray-700 text-sm font-bold mb-2">Выберите файл Excel:</label>
+                <input type="file" name="excel_file" id="excel_file" class="border border-gray-400 p-2 rounded-lg w-full">
+            </div>
+            @error('error')
+            <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Загрузить</button>
+        </form>
 
         <table class="mt-4 w-full table-auto">
             <thead>
@@ -27,20 +38,9 @@
                 <th class="py-3 px-6 text-left">Дата загрузки</th>
                 <th class="py-3 px-6 text-center">Заказ получен</th>
                 <th class="py-3 px-6 text-center">Подробнее</th>
+                <th class="py-3 px-6 text-center">Действия</th>
             </tr>
             </thead>
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                    @if (session('missingProducts'))
-                        <ul>
-                            @foreach (session('missingProducts') as $product)
-                                <li>{{ $product }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-            @endif
             <tbody class="text-gray-800 text-sm font-light">
             @foreach($orders as $order)
                 <tr class="border-b border-gray-200 hover:bg-gray-100">
@@ -54,12 +54,20 @@
                             Развернуть
                         </a>
                     </td>
+                    <td class="py-3 px-6 text-center">
+                        <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот заказ? Все связанные товары также будут удалены.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i> Удалить
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-    </form>
-</div>
+    </div>
 @endsection
 <script>
     function updateReceivedStatus(orderId, received) {

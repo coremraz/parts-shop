@@ -76,8 +76,8 @@ class AdminOrderController extends Controller
                         $orderComposition = new Order_composition();
                         $orderComposition->quantity = $quantity;
                         $orderComposition->order_id = $order->id;
-                        $orderComposition->product_id = $product->id;
-                        $orderComposition->status = 'Ок';
+                        $orderComposition->product_id = $product ? $product->id : null; // Если продукт не найден, указываем null
+                        $orderComposition->status = $product ? 'Ок' : "Ошибка товар $productModel не загружен";
                         $orderComposition->save();
 
                         $row++;
@@ -108,5 +108,16 @@ class AdminOrderController extends Controller
             $order->save();
         }
         return response()->json(['success' => true]);
+    }
+
+    public function destroy(Order $order)
+    {
+        // Удаляем все order compositions, связанные с этим заказом
+        $order->details()->delete();
+
+        // Удаляем сам заказ
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')->with('success', 'Заказ успешно удален!');
     }
 }
